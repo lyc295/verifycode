@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CaptchaModel implements Serializable {
     /**
-     * 验证码类型:(clickWord,blockPuzzle)
+     * 验证码类型:(vcByWord,vcByImg)
      */
     private String captchaType;
     /**

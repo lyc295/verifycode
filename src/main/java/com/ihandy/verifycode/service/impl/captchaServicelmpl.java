@@ -37,7 +37,7 @@ public class captchaServicelmpl implements CaptchaService {
     public ResponseData getVerifyCode(CaptchaModel captchaModel) {
         BufferedImage bufferedImage = null;
         CaptchaModel captcha = null;
-        if(PropertiesUtil.type.equals(captchaModel.getCaptchaType())){
+        if("vcByWord".equals(captchaModel.getCaptchaType())){
             bufferedImage = verifyCodeUtils.getPicClick();
             if (null == bufferedImage) {
                 logger.error("数字底图未初始化成功，请检查路径");
@@ -92,7 +92,7 @@ public class captchaServicelmpl implements CaptchaService {
         String verifycode = redisTemplate.opsForValue().get(codeKey);
         //验证码只用一次，即刻失效
         redisTemplate.delete(codeKey);
-        if(PropertiesUtil.type.equals(captchaModel.getCaptchaType())){
+        if("vcByWord".equals(captchaModel.getCaptchaType())){
             PointModel pointByRedis = null;   //Redis中存储的坐标
             PointModel pointByFront = null;   //前端传过来的坐标
             //图片验证码检验
