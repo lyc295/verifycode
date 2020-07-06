@@ -40,8 +40,8 @@ public class captchaServicelmpl implements CaptchaService {
         if("vcByWord".equals(captchaModel.getCaptchaType())){
             bufferedImage = verifyCodeUtils.getPicClick();
             if (null == bufferedImage) {
-                logger.error("数字底图未初始化成功，请检查路径");
-                return ResponseData.init(ResponseCode.FAIL.getValue(),"原生图片初始化失败，请检查路径");
+                logger.error("点字底图未初始化成功，请检查路径");
+                return ResponseData.init(ResponseCode.FAIL.getValue(),"点字原生图片初始化失败，请检查路径");
             }
             captcha = getImageData(bufferedImage);
             if (captcha == null || StringUtils.isBlank(captcha.getOriginalImageBase64())) {
@@ -51,7 +51,7 @@ public class captchaServicelmpl implements CaptchaService {
             bufferedImage = verifyCodeUtils.getOriginal();
             if (null == bufferedImage) {
                 logger.error("滑动底图未初始化成功，请检查路径");
-                return ResponseData.init(ResponseCode.FAIL.getValue(),"原生图片初始化失败，请检查路径");
+                return ResponseData.init(ResponseCode.FAIL.getValue(),"滑动原生图片初始化失败，请检查路径");
             }
             //设置水印
             Graphics backgroundGraphics = bufferedImage.getGraphics();
@@ -74,6 +74,7 @@ public class captchaServicelmpl implements CaptchaService {
                 return ResponseData.init(ResponseCode.FAIL.getValue(),"获取验证码失败,请联系管理员");
             }
         }
+        captcha.setCaptchaType(captchaModel.getCaptchaType());
         return ResponseData.init(ResponseCode.SUCCESS.getValue(),"获取验证码成功",captcha);
     }
 
@@ -93,24 +94,6 @@ public class captchaServicelmpl implements CaptchaService {
         //验证码只用一次，即刻失效
         redisTemplate.delete(codeKey);
         if("vcByWord".equals(captchaModel.getCaptchaType())){
-            PointModel pointByRedis = null;   //Redis中存储的坐标
-            PointModel pointByFront = null;   //前端传过来的坐标
-            //图片验证码检验
-            try {
-                pointByFront = JSONObject.parseObject(String.valueOf(JSONObject.parseObject(captchaModel.getParamsJson())), PointModel.class);
-                pointByRedis = JSONObject.parseObject(verifycode, PointModel.class);
-            } catch (Exception e) {
-                logger.error("验证码坐标解析失败", e);
-                return ResponseData.init(ResponseCode.FAIL.getValue(),"验证码坐标解析失败");
-            }
-            if (pointByRedis.x - Integer.parseInt(PropertiesUtil.slipOffset) > pointByFront.x
-                    || pointByFront.x > pointByRedis.x + Integer.parseInt(PropertiesUtil.slipOffset)
-                    || pointByRedis.y != pointByFront.y) {
-                return ResponseData.init(ResponseCode.FAIL.getValue(),"验证失败");
-            }else{
-                return ResponseData.init(ResponseCode.SUCCESS.getValue(),"验证成功");
-            }
-        }else{
             List<PointModel> pointByFrontList = null;
             List<PointModel> pointByRedisList = null;
             //点字验证码检验
@@ -130,6 +113,24 @@ public class captchaServicelmpl implements CaptchaService {
                 }
             }
             return ResponseData.init(ResponseCode.SUCCESS.getValue(),"验证成功");
+        }else{
+            PointModel pointByRedis = null;   //Redis中存储的坐标
+            PointModel pointByFront = null;   //前端传过来的坐标
+            //图片验证码检验
+            try {
+                pointByFront = JSONObject.parseObject(String.valueOf(JSONObject.parseObject(captchaModel.getParamsJson())), PointModel.class);
+                pointByRedis = JSONObject.parseObject(verifycode, PointModel.class);
+            } catch (Exception e) {
+                logger.error("验证码坐标解析失败", e);
+                return ResponseData.init(ResponseCode.FAIL.getValue(),"验证码坐标解析失败");
+            }
+            if (pointByRedis.x - Integer.parseInt(PropertiesUtil.slipOffset) > pointByFront.x
+                    || pointByFront.x > pointByRedis.x + Integer.parseInt(PropertiesUtil.slipOffset)
+                    || pointByRedis.y != pointByFront.y) {
+                return ResponseData.init(ResponseCode.FAIL.getValue(),"验证失败");
+            }else{
+                return ResponseData.init(ResponseCode.SUCCESS.getValue(),"验证成功");
+            }
         }
     }
 
@@ -188,9 +189,9 @@ public class captchaServicelmpl implements CaptchaService {
         captchaModel.setUuId(verifyCodeUtils.getUUID());
 
         //将坐标信息存入redis中 并设置有效时间为1分钟
-        redisTemplate.opsForValue().set(captchaModel.getUuId(),JSONObject.toJSONString(captchaModel));
+        redisTemplate.opsForValue().set(captchaModel.getUuId(),JSONObject.toJSONString(pointList));
         redisTemplate.expire(captchaModel.getUuId(), 60, TimeUnit.SECONDS);
-        logger.debug("token：{},point:{}", captchaModel.getUuId(), JSONObject.toJSONString(captchaModel));
+        logger.debug("token：{},point:{}", captchaModel.getUuId(), JSONObject.toJSONString(pointList));
         return captchaModel;
     }
 
