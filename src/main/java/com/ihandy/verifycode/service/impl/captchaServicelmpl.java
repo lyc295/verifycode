@@ -87,6 +87,12 @@ public class captchaServicelmpl implements CaptchaService {
     public ResponseData checkVerifyCode(CaptchaModel captchaModel) {
         //取坐标信息
         String codeKey = captchaModel.getUuId();
+        if(StringUtils.isEmpty(codeKey)){
+            return ResponseData.init(ResponseCode.FAIL.getValue(),"验证码唯一标识UUID不能为空");
+        }
+        if(StringUtils.isEmpty(captchaModel.getCaptchaType())){
+            return ResponseData.init(ResponseCode.FAIL.getValue(),"验证码类型不能为空。");
+        }
         if (!redisTemplate.hasKey(codeKey)) {
             return ResponseData.init(ResponseCode.FAIL.getValue(),"验证码已过期，请刷新后重试。");
         }
