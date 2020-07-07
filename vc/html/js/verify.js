@@ -7,7 +7,7 @@
 				type : "get",
 				contentType: "application/json;charset=UTF-8",
 				url : baseUrl + "/captcha/getVerifyCode",
-                data :{captchaType:"vcByWord"},
+                data :{captchaType:"vcByImg"},
 				success:function(res){
 					localStorage.setItem("uuid",res.responseBody.uuId)
 					resolve(res)

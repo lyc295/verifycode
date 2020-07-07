@@ -47,6 +47,7 @@ public class captchaServicelmpl implements CaptchaService {
             if (captcha == null || StringUtils.isBlank(captcha.getOriginalImageBase64())) {
                 return ResponseData.init(ResponseCode.FAIL.getValue(),"获取验证码失败,请联系管理员");
             }
+            captcha.setCaptchaType("vcByWord");
         }else{
             bufferedImage = verifyCodeUtils.getOriginal();
             if (null == bufferedImage) {
@@ -73,8 +74,8 @@ public class captchaServicelmpl implements CaptchaService {
             if (captcha == null || StringUtils.isBlank(captcha.getJigsawImageBase64()) || StringUtils.isBlank(captcha.getOriginalImageBase64())) {
                 return ResponseData.init(ResponseCode.FAIL.getValue(),"获取验证码失败,请联系管理员");
             }
+            captcha.setCaptchaType("vcByImg");
         }
-        captcha.setCaptchaType(captchaModel.getCaptchaType());
         return ResponseData.init(ResponseCode.SUCCESS.getValue(),"获取验证码成功",captcha);
     }
 
@@ -104,7 +105,7 @@ public class captchaServicelmpl implements CaptchaService {
             List<PointModel> pointByRedisList = null;
             //点字验证码检验
             try {
-                pointByFrontList = JSONObject.parseArray(String.valueOf(JSONObject.parseObject(captchaModel.getParamsJson())), PointModel.class);
+                pointByFrontList = JSONObject.parseArray(captchaModel.getParamsJson(), PointModel.class);
                 pointByRedisList = JSONObject.parseArray(verifycode, PointModel.class);
             } catch (Exception e) {
                 logger.error("验证码坐标解析失败", e);

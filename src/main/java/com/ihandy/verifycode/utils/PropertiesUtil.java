@@ -23,10 +23,6 @@ public class PropertiesUtil {
 
     public static int HAN_ZI_SIZE_HALF = HAN_ZI_SIZE / 2;
     /**
-     * 验证码类型.
-     */
-    public static String type ;
-    /**
      * 滑动拼图底图路径.
      */
     public static String jigsaw ;
@@ -79,8 +75,7 @@ public class PropertiesUtil {
             jigsaw = getString("captcha.jigsaw","classpath:images/jigsaw");
             picClick = getString("captcha.pic-click","classpath:images/pic-click");
             verifyCodeUtils.cacheImage(jigsaw,picClick);
-
-            type = getString("captcha.type","vcByImg");
+            logger.info("图片加载完成...................");
             waterMark = getString("captcha.water-mark","自定义水印");
             waterFont = getString("captcha.water-font","宋体");
             fontType = getString("captcha.font-type","宋体");
