@@ -125,7 +125,7 @@ public class captchaServicelmpl implements CaptchaService {
             PointModel pointByFront = null;   //前端传过来的坐标
             //图片验证码检验
             try {
-                pointByFront = JSONObject.parseObject(String.valueOf(JSONObject.parseObject(captchaModel.getParamsJson())), PointModel.class);
+                pointByFront = JSONObject.parseObject(captchaModel.getParamsJson(), PointModel.class);
                 pointByRedis = JSONObject.parseObject(verifycode, PointModel.class);
             } catch (Exception e) {
                 logger.error("验证码坐标解析失败", e);
