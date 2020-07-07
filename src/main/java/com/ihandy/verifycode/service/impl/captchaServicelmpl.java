@@ -190,7 +190,7 @@ public class captchaServicelmpl implements CaptchaService {
 
         //将坐标信息存入redis中 并设置有效时间为1分钟
         redisTemplate.opsForValue().set(captchaModel.getUuId(),JSONObject.toJSONString(pointList));
-        redisTemplate.expire(captchaModel.getUuId(), 60, TimeUnit.SECONDS);
+        redisTemplate.expire(captchaModel.getUuId(), PropertiesUtil.verifyCodeTime, TimeUnit.SECONDS);
         logger.debug("token：{},point:{}", captchaModel.getUuId(), JSONObject.toJSONString(pointList));
         return captchaModel;
     }
@@ -268,9 +268,9 @@ public class captchaServicelmpl implements CaptchaService {
             captchaModel.setJigsawImageBase64(encoder.encodeToString(jigsawImages).replaceAll("\r|\n", ""));
             captchaModel.setUuId(verifyCodeUtils.getUUID());
 
-            //将坐标信息存入redis中 并设置有效时间为1分钟
+            //将坐标信息存入redis中 并设置有效时间
             redisTemplate.opsForValue().set(captchaModel.getUuId(),JSONObject.toJSONString(point));
-            redisTemplate.expire(captchaModel.getUuId(), 60, TimeUnit.SECONDS);
+            redisTemplate.expire(captchaModel.getUuId(), PropertiesUtil.verifyCodeTime, TimeUnit.SECONDS);
             logger.debug("token：{},point:{}", captchaModel.getUuId(), JSONObject.toJSONString(point));
             return captchaModel;
         } catch (Exception e) {

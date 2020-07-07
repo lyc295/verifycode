@@ -51,10 +51,6 @@ public class PropertiesUtil {
      */
     public static String slipOffset;
     /**
-     * aes加密坐标开启或者禁用(true|false).
-     */
-    public static Boolean aesStatus ;
-    /**
      * 滑块干扰项(0/1/2)
      */
     public static Integer interferenceOptions ;
@@ -62,6 +58,10 @@ public class PropertiesUtil {
      * 点选文字 字体总个数
      */
     public static int wordTotalCount;
+    /**
+     * 验证码存储时间
+     */
+    public static int verifyCodeTime;
 
     @PostConstruct
     public void init() {
@@ -85,9 +85,9 @@ public class PropertiesUtil {
             waterFont = getString("captcha.water-font","宋体");
             fontType = getString("captcha.font-type","宋体");
             slipOffset = getString("captcha.slip-offset","5");
-            aesStatus = Boolean.parseBoolean(getString("captcha.aes-status", "true"));
             interferenceOptions = Integer.parseInt(getString("captcha.interference-options","1"));
             wordTotalCount = Integer.parseInt(getString("captcha.wordTotalCount","4"));
+            verifyCodeTime = Integer.parseInt(getString("captcha.verifyCodeTime","60"));
         } catch (IOException var2) {
             logger.error(var2.getMessage(), var2);
         }
